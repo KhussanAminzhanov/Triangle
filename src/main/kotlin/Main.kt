@@ -5,11 +5,25 @@ import kotlin.math.sqrt
 
 data class Vector(var x: Double, var y: Double)
 
-class Triangle(var first: Vector, var second: Vector, var third: Vector) {
+class Triangle(first: Vector, second: Vector, third: Vector) {
 
-    init {
-        if (isCollinear()) throw java.lang.IllegalArgumentException()
-    }
+    var first: Vector = first
+        set(vector) {
+            field = vector
+            throwExceptionIfCollinear()
+        }
+
+    var second: Vector = second
+        set(vector) {
+            field = vector
+            throwExceptionIfCollinear()
+        }
+
+    var third: Vector = third
+        set(vector) {
+            field = vector
+            throwExceptionIfCollinear()
+        }
 
     private var lengthA = getDistance(first, second)
     private var lengthB = getDistance(second, third)
@@ -21,17 +35,20 @@ class Triangle(var first: Vector, var second: Vector, var third: Vector) {
     val area: Double
         get() = abs(0.5 * (first.x * (second.y - third.y) + second.x * (third.y - first.y) + third.x * (first.y - second.y)))
 
+    init {
+        if (isCollinear()) throwExceptionIfCollinear()
+    }
+
     private fun getDistance(first: Vector, second: Vector): Double {
         return sqrt((second.x - first.x).pow(2) + (second.y - first.y).pow(2))
     }
 
     private fun isCollinear(): Boolean {
-        return getSlope(first, second) == getSlope(second, third) &&
-                getSlope(first, second) == getSlope(second, third)
+        return area == 0.0
     }
 
-    private fun getSlope(vectorOne: Vector, vectorTwo: Vector): Double {
-        return (vectorTwo.x - vectorOne.x) / (vectorTwo.y - vectorOne.y)
+    private fun throwExceptionIfCollinear() {
+        if (isCollinear()) throw java.lang.IllegalArgumentException()
     }
 
     override fun toString(): String {
@@ -42,9 +59,11 @@ class Triangle(var first: Vector, var second: Vector, var third: Vector) {
 }
 
 fun main() {
-    val triangle = Triangle(Vector(-2.0, 7.0), Vector(1.0, 1.0), Vector(3.0, -3.0))
+    val triangle = Triangle(Vector(-2.0, 7.0), Vector(1.0, 1.0), Vector(-3.0, 3.0))
 
     println(triangle)
     println("Perimeter: ${triangle.perimeter}")
     println("Area: ${triangle.area}")
+
+    triangle.second = Vector(-2.0, 7.0)
 }
