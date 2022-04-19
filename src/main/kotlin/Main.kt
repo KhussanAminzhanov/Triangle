@@ -26,13 +26,8 @@ class Triangle(var first: Vector, var second: Vector, var third: Vector) {
     }
 
     private fun isCollinear(): Boolean {
-        if (getSlope(first, second) == getSlope(second, third) && getSlope(first, second) == getSlope(second, third)) {
-            return true
-        }
-//        } else if (lengthA + lengthB == lengthC || lengthC + lengthB == lengthA || lengthA + lengthC == lengthB) {
-//            return true
-//        }
-        return false
+        return getSlope(first, second) == getSlope(second, third) &&
+                getSlope(first, second) == getSlope(second, third)
     }
 
     private fun getSlope(vectorOne: Vector, vectorTwo: Vector): Double {
@@ -47,7 +42,7 @@ class Triangle(var first: Vector, var second: Vector, var third: Vector) {
 }
 
 fun main() {
-    val triangle = Triangle(Vector(1.0, 1.0), Vector(2.0, 2.0), Vector(4.0, 6.0))
+    val triangle = Triangle(Vector(-2.0, 7.0), Vector(1.0, 1.0), Vector(3.0, -3.0))
 
     println(triangle)
     println("Perimeter: ${triangle.perimeter}")
