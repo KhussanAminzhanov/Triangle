@@ -1,62 +1,42 @@
-import java.util.Scanner
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
-val scanner = Scanner(System.`in`)
+data class Vector(var x: Double, var y: Double)
 
-data class Vector(var x: Int, var y: Int)
+class Triangle(var first: Vector, var second: Vector, var third: Vector) {
 
-class Triangle() {
+    init {
+        if (isCollinear()) throw java.lang.IllegalArgumentException()
+    }
 
-    private var first: Vector
-    private var second: Vector
-    private var third: Vector
+    private var lengthA = getDistance(first, second)
+    private var lengthB = getDistance(second, third)
+    private var lengthC = getDistance(first, third)
 
     val perimeter: Double
-        get() = getDistanceFromTwoDots(first, second) +
-                getDistanceFromTwoDots(second, third) +
-                getDistanceFromTwoDots(third, first)
+        get() = ((lengthA + lengthB + lengthC) * 100).roundToInt() / 100.0
 
     val area: Double
         get() = abs(0.5 * (first.x * (second.y - third.y) + second.x * (third.y - first.y) + third.x * (first.y - second.y)))
 
-    init {
-        first = getCoordinates("first")
-        second = getCoordinates("second")
-        third = getCoordinates("third")
-    }
-
-    private fun getCoordinates(message: String): Vector {
-        print("Enter coordinates for ${message.trim().lowercase()} vector: ")
-        var vector = Vector(scanner.nextInt(), scanner.nextInt())
-        when (message) {
-            "second" -> {
-                while (isEqual(vector, first)) {
-                    print("Coordinates of the vector must be unique: ")
-                    vector = Vector(scanner.nextInt(), scanner.nextInt())
-                }
-            }
-            "third" -> {
-                while (isEqual(vector, first) || isEqual(vector, second)) {
-                    print("Coordinates of the vector must be unique: ")
-                    vector = Vector(scanner.nextInt(), scanner.nextInt())
-                }
-            }
-        }
-        return vector
-    }
-
-    private fun getDistanceFromTwoDots(first: Vector, second: Vector): Double {
-        return sqrt((second.x - first.x).toDouble().pow(2) + (second.y - first.y).toDouble().pow(2))
+    private fun getDistance(first: Vector, second: Vector): Double {
+        return sqrt((second.x - first.x).pow(2) + (second.y - first.y).pow(2))
     }
 
     private fun isCollinear(): Boolean {
-        return first.x == second.x && second.x == third.x || first.y == second.y && second.y == third.y
+        if (getSlope(first, second) == getSlope(second, third) && getSlope(first, second) == getSlope(second, third)) {
+            return true
+        }
+//        } else if (lengthA + lengthB == lengthC || lengthC + lengthB == lengthA || lengthA + lengthC == lengthB) {
+//            return true
+//        }
+        return false
     }
 
-    private fun isEqual(vectorOne: Vector, vectorTwo: Vector): Boolean {
-        return vectorOne.x == vectorTwo.x && vectorOne.y == vectorTwo.y
+    private fun getSlope(vectorOne: Vector, vectorTwo: Vector): Double {
+        return (vectorTwo.x - vectorOne.x) / (vectorTwo.y - vectorOne.y)
     }
 
     override fun toString(): String {
@@ -67,11 +47,9 @@ class Triangle() {
 }
 
 fun main() {
-    val triangle = Triangle()
+    val triangle = Triangle(Vector(1.0, 1.0), Vector(2.0, 2.0), Vector(4.0, 6.0))
 
     println(triangle)
     println("Perimeter: ${triangle.perimeter}")
     println("Area: ${triangle.area}")
-
-    scanner.close()
 }
